@@ -1,9 +1,10 @@
 import sqlite3
 
 conn = sqlite3.connect("database/cineflow.db")
+
 cursor = conn.cursor()
 
-# ---------------- USERS ----------------
+# Users Table
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS users(
     user_id TEXT PRIMARY KEY,
@@ -15,13 +16,13 @@ CREATE TABLE IF NOT EXISTS users(
 )
 """)
 
-# ---------------- MOVIES ----------------
+# Movies Table
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS movies(
     movie_id TEXT PRIMARY KEY,
-    title TEXT NOT NULL,
-    genre TEXT,
-    language TEXT,
+    movie_name TEXT NOT NULL,
+    genre TEXT NOT NULL,
+    language TEXT NOT NULL,
     duration INTEGER,
     rating REAL,
     price REAL,
@@ -29,17 +30,17 @@ CREATE TABLE IF NOT EXISTS movies(
 )
 """)
 
-# ---------------- THEATRES ----------------
+# Theatres Table
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS theatres(
     theatre_id TEXT PRIMARY KEY,
     theatre_name TEXT NOT NULL,
-    city TEXT,
-    screens INTEGER
+    city TEXT NOT NULL,
+    total_screens INTEGER
 )
 """)
 
-# ---------------- SHOWS ----------------
+# Shows Table
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS shows(
     show_id TEXT PRIMARY KEY,
@@ -52,14 +53,14 @@ CREATE TABLE IF NOT EXISTS shows(
 )
 """)
 
-# ---------------- BOOKINGS ----------------
+# Bookings Table
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS bookings(
     booking_id TEXT PRIMARY KEY,
     user_id TEXT,
     show_id TEXT,
     seat_no TEXT,
-    amount REAL,
+    total_amount REAL,
     booking_date TEXT,
     status TEXT,
     FOREIGN KEY(user_id) REFERENCES users(user_id),
@@ -67,7 +68,7 @@ CREATE TABLE IF NOT EXISTS bookings(
 )
 """)
 
-# ---------------- PAYMENTS ----------------
+# Payments Table
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS payments(
     payment_id TEXT PRIMARY KEY,
@@ -81,6 +82,7 @@ CREATE TABLE IF NOT EXISTS payments(
 """)
 
 conn.commit()
+
 conn.close()
 
-print("Database and Tables Created Successfully!")
+print("Database Created Successfully.")

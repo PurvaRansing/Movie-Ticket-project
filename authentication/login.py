@@ -1,32 +1,51 @@
 from db_connection import get_connection
 
-def login():
+
+# Admin Login
+def admin_login():
+
+    print("\n========== Admin Login ==========")
+
+    email = input("Enter Admin Email : ")
+    password = input("Enter Admin Password : ")
+
+    if email == "admin@gmail.com" and password == "admin123":
+
+        print("\nLogin Successful.")
+        return True
+
+    else:
+
+        print("\nInvalid Admin Email or Password.")
+        return False
+
+
+# Customer Login
+def customer_login():
 
     conn = get_connection()
     cursor = conn.cursor()
 
-    print("\n========== Login ==========")
+    print("\n========== Customer Login ==========")
 
     email = input("Enter Email : ")
     password = input("Enter Password : ")
 
-    cursor.execute("SELECT * FROM users WHERE email = ? AND password = ?", (email, password))
+    cursor.execute(
+        "SELECT * FROM users WHERE email = ? AND password = ?",
+        (email, password)
+    )
 
     result = cursor.fetchone()
 
+    conn.close()
+
     if result:
 
-        print("\nLogin Successful!")
-
-        if result[5] == "admin":
-            print("Welcome Admin")
-            # admin_dashboard()
-
-        elif result[5] == "customer":
-            print("Welcome Customer")
-            # customer_dashboard()
+        print("\nLogin Successful.")
+        return True
 
     else:
-        print("\nInvalid Email or Password!")
 
-    conn.close()
+        print("\nInvalid Email or Password.")
+        return False

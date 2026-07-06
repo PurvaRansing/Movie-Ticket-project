@@ -7,37 +7,47 @@ def register():
 
     print("\n========== Customer Registration ==========")
 
-    user_id = input("Enter User ID : ")
     name = input("Enter Name : ")
     email = input("Enter Email : ")
     mobile = input("Enter Mobile Number : ")
     password = input("Enter Password : ")
-
-    # Check User ID
-    cursor.execute("SELECT * FROM users WHERE user_id = ?", (user_id,))
-    result = cursor.fetchone()
-
-    if result:
-        print("User ID already exists!")
-        conn.close()
-        return
 
     # Check Email
     cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
     result = cursor.fetchone()
 
     if result:
-        print("Email already exists!")
+        print("Email already exists.")
         conn.close()
         return
 
+    # Check Mobile Number
+    cursor.execute("SELECT * FROM users WHERE mobile = ?", (mobile,))
+    result = cursor.fetchone()
+
+    if result:
+        print("Mobile Number already exists.")
+        conn.close()
+        return
+
+    # Generate User ID
+    cursor.execute("SELECT COUNT(*) FROM users")
+    result = cursor.fetchone()
+
+    count = result[0]
+    count = count + 1
+
+    user_id = "USR" + str(100 + count)
+
     # Insert Data
     cursor.execute("""
-        INSERT INTO users(user_id, name, email, mobile, password, role)
-        VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO users(user_id, name, email, mobile, password, role)
+    VALUES (?, ?, ?, ?, ?, ?)
     """, (user_id, name, email, mobile, password, "customer"))
 
     conn.commit()
-    conn.close()
 
-    print("\nRegistration Successful!")
+    print("\nRegistration Successful.")
+    print("Your User ID is :", user_id)
+
+    conn.close()
