@@ -1,4 +1,4 @@
-from ..db_connection import get_connection
+from db_connection import get_connection
 from datetime import datetime
 
 
@@ -12,6 +12,7 @@ def  book_ticket():
     show_id = (input("enter show id :"))
     seat_no = (input("enter seat id :"))
     total_amount = (input("enter total amount"))
+
 
     cursor.execute("SELECT * FROM  users WHERE  user_id = ?",(user_id,))
     user = cursor.fetchone()
@@ -34,9 +35,11 @@ def  book_ticket():
 
     booking_id = "BKG" + str(101 + count)
 
-
+#DATE AND TIME 
     booking_date = datetime.now().strftime("%d/%m/9%y")
     status = "Confirmed"
+
+    #INSERT QUERY
     cursor.execute("""
 INSERT INTO bookings
 (booking_id, user_id, show_id, seat_no, total_amount, booking_date, status)
