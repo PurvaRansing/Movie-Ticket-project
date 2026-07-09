@@ -7,7 +7,6 @@ def view_booking():
 
      print("\n==========  VIEW BOOKING  ==========")
 
-     
      booking_id = input("enter your booking id :")
 
      cursor.execute ("SELECT * FROM bookings WHERE booking_id=?",(booking_id,))
