@@ -5,9 +5,10 @@ from search_booking import search_booking
 
 def booking_menu():
 
-    print("\n======================================")
-    print("          BOOKING MENU")
-    print("=======================================")
+    print("\n============================================")
+    print("   WELCOME TO MOVIE TICKET BOOKING SYSTEM ")
+    print("==============================================")
+    print("MENU :")
 
     while True:
             
