@@ -1,5 +1,5 @@
 from book_ticket import book_ticket
-from view_booking import view_booking
+from view_booking import view_bookings
 from cancel_booking import cancel_booking
 from search_booking import search_booking
 
@@ -24,7 +24,7 @@ def booking_menu():
                     book_ticket()
                   
               case 2:
-                      view_booking()
+                      view_bookings()
 
               case 3:
                       cancel_booking()
