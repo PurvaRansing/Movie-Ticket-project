@@ -1,4 +1,6 @@
 from db_connection import get_connection
+from admin_menu import admin_menu
+from customer_menu import customer_menu
 
 
 # Admin Login
@@ -11,7 +13,8 @@ def admin_login():
 
     if email == "admin@gmail.com" and password == "admin123":
 
-        print("\nLogin Successful.")
+        print("\nAdmin Login Successful.")
+        admin_menu()
         return True
 
     else:
@@ -36,13 +39,14 @@ def customer_login():
         (email, password)
     )
 
-    result = cursor.fetchone()
+    user = cursor.fetchone()
 
     conn.close()
 
-    if result:
+    if user:
 
-        print("\nLogin Successful.")
+        print("\nCustomer Login Successful.")
+        customer_menu()
         return True
 
     else:
