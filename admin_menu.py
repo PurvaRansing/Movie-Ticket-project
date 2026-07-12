@@ -1,6 +1,6 @@
 from movies.movie_menu import movie_menu
 from theatres.theatre_menu import theatre_menu
-from shows.show_menu import show_menu
+#from shows.show_menu import show_menu
 from bookings.booking_menu import booking_menu
 from payments.payment_menu import payment_menu
 from reports.report_menu import report_menu
@@ -31,8 +31,8 @@ def admin_menu():
             case "2":
                 theatre_menu()
 
-            case "3":
-                show_menu()
+            # case "3":
+            #     show_menu()
 
             case "4":
                 booking_menu()

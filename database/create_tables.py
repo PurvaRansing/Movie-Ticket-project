@@ -16,6 +16,19 @@ CREATE TABLE IF NOT EXISTS users(
 )
 """)
 
+
+cursor.execute("""
+INSERT OR IGNORE INTO users(user_id, name, email, mobile, password, role)
+VALUES (?, ?, ?, ?, ?, ?)
+""", (
+    "USR100",
+    "Admin",
+    "admin@gmail.com",
+    "9999999999",
+    "admin123",
+    "admin"
+))
+
 # Movies Table
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS movies(

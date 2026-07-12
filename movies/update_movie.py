@@ -39,7 +39,7 @@ def update_movie():
                 new_name = input("Enter New Movie Name : ")
 
                 cursor.execute(
-                    "UPDATE movies SET movie_name = ? WHERE movie_id = ?",
+                    "UPDATE movies SET movie_name = ? WHERE title = ?",
                     (new_name, movie_id)
                 )
 

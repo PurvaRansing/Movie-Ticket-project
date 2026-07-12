@@ -34,7 +34,7 @@ def search_movie():
                 movie_name = input("Enter Movie Name : ")
 
                 cursor.execute(
-                    "SELECT * FROM movies WHERE movie_name = ?",
+                    "SELECT * FROM movies WHERE title = ?",
                     (movie_name,)
                 )
 

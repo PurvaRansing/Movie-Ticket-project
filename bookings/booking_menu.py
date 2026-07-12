@@ -1,7 +1,7 @@
-from book_ticket import book_ticket
-from view_booking import view_bookings
-from cancel_booking import cancel_booking
-from search_booking import search_booking
+from bookings.book_ticket import book_ticket
+from bookings.view_booking import view_bookings
+from bookings.cancel_booking import cancel_booking
+from bookings.search_booking import search_booking
 
 def booking_menu():
 
@@ -39,4 +39,5 @@ def booking_menu():
               case _:
                   print("Invalid Choice")
 
-booking_menu()
+if __name__ == "__main__":
+        booking_menu()

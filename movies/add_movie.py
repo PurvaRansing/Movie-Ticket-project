@@ -45,7 +45,7 @@ def add_movie():
 
     # Check Duplicate Movie
     cursor.execute(
-        "SELECT * FROM movies WHERE movie_name = ?",
+        "SELECT * FROM movies WHERE title = ?",
         (movie_name,)
     )
 

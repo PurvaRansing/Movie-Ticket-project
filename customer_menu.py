@@ -1,7 +1,7 @@
-from movies.view_movie import view_movie
-from shows.view_show import view_show
+from movies.view_movie import view_movies
+#from shows.view_show import view_show
 from bookings.book_ticket import book_ticket
-from bookings.view_booking import view_booking
+from bookings.view_booking import view_bookings
 from bookings.search_booking import search_booking
 from bookings.cancel_booking import cancel_booking
 from payments.make_payment import make_payment
@@ -26,16 +26,16 @@ def customer_menu():
         match choice:
 
             case "1":
-                view_movie()
+                view_movies()
 
-            case "2":
-                view_show()
+            # case "2":
+            #     view_show()
 
             case "3":
                 book_ticket()
 
             case "4":
-                view_booking()
+                view_bookings()
 
             case "5":
                 search_booking()

@@ -30,7 +30,7 @@ def view_movies():
                 cursor.execute("SELECT * FROM movies WHERE status = ?", ("Upcoming",))
 
             case "4":
-                cursor.execute("SELECT * FROM movies ORDER BY movie_name ASC")
+                cursor.execute("SELECT * FROM movies ORDER BY title ASC")
 
             case "5":
                 cursor.execute("SELECT * FROM movies ORDER BY rating DESC")
