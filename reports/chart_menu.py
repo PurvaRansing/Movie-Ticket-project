@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 from reports.movie_chart import movie_chart
 from reports.booking_chart import booking_chart
 from reports.payment_chart import payment_chart
+=======
+from charts.movie_chart import movie_chart
+from charts.booking_chart import booking_chart
+from charts.payment_chart import payment_chart
+>>>>>>> origin/main
 
 
 def chart_menu():

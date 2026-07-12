@@ -7,8 +7,8 @@ def movie_chart():
     conn = get_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT title, price FROM movies")
 
+    cursor.execute("SELECT title, price FROM movies")
     data = cursor.fetchall()
 
     if len(data) == 0:
