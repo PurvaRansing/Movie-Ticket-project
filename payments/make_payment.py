@@ -47,7 +47,7 @@ def make_payment():
             print("Booking ID Not Found.")
             continue
 
-        amount = booking[7]
+        amount = booking[4]
 
         cursor.execute("SELECT COUNT(*) FROM payments")
 

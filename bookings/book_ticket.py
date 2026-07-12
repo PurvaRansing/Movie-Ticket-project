@@ -36,13 +36,13 @@ def  book_ticket():
     booking_id = "BKG" + str(101 + count)
 
 #DATE AND TIME 
-    booking_date = datetime.now().strftime("%d/%m/9%y")
+    booking_date = datetime.now().strftime("%d/%m/%y")
     status = "Confirmed"
 
     #INSERT QUERY
     cursor.execute("""
 INSERT INTO bookings
-(booking_id, user_id, show_id, seat_no, total_amount, booking_date, status)
+(booking_id, user_id, show_id, seat_no, amount, booking_date, status)
 VALUES (?, ?, ?, ?, ?, ?, ?)
 """, (
     booking_id,

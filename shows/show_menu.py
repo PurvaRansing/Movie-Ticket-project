@@ -1,90 +1,43 @@
-from db_connection import get_connection
+from shows.add_show import add_show
+from shows.view_show import view_shows
+from shows.update_show import update_show
+from shows.delete_show import delete_show
+from shows.search_show import search_show
 
-def search_show():
 
-    conn = get_connection()
-    cursor = conn.cursor()
+def show_menu():
 
     while True:
 
-        print("\n========== Search Show ==========")
-        print("1. Search by Show ID")
-        print("2. Search by Movie ID")
-        print("3. Search by Theatre ID")
-        print("4. Search by Show Date")
-        print("5. Back")
+        print("\n========== Show Management ==========")
+        print("1. Add Show")
+        print("2. View Shows")
+        print("3. Update Show")
+        print("4. Delete Show")
+        print("5. Search Show")
+        print("6. Return to Admin Menu")
 
         choice = input("Enter your choice : ")
 
         match choice:
 
             case "1":
-
-                show_id = input("Enter Show ID : ")
-
-                cursor.execute(
-                    "SELECT * FROM shows WHERE show_id = ?",
-                    (show_id,)
-                )
+                add_show()
 
             case "2":
-
-                movie_id = input("Enter Movie ID : ")
-
-                cursor.execute(
-                    "SELECT * FROM shows WHERE movie_id = ?",
-                    (movie_id,)
-                )
+                view_shows()
 
             case "3":
-
-                theatre_id = input("Enter Theatre ID : ")
-
-                cursor.execute(
-                    "SELECT * FROM shows WHERE theatre_id = ?",
-                    (theatre_id,)
-                )
+                update_show()
 
             case "4":
-
-                show_date = input("Enter Show Date (DD-MM-YYYY) : ")
-
-                cursor.execute(
-                    "SELECT * FROM shows WHERE show_date = ?",
-                    (show_date,)
-                )
+                delete_show()
 
             case "5":
+                search_show()
 
-                conn.close()
+            case "6":
                 return
 
             case _:
-
                 print("Invalid Choice.")
-                continue
-
-        shows = cursor.fetchall()
-
-        if len(shows) == 0:
-
-            print("\nNo Show Found.")
-            continue
-
-        print("\n==============================================================================")
-        print("Show ID\tMovie ID\tTheatre ID\tShow Date\tShow Time")
-        print("==============================================================================")
-
-        for show in shows:
-
-            print(
-                show[0], "\t",
-                show[1], "\t",
-                show[2], "\t",
-                show[3], "\t",
-                show[4]
-            )
-
-        print("==============================================================================")
-
-    conn.close()

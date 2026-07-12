@@ -1,5 +1,5 @@
 from movies.view_movie import view_movies
-#from shows.view_show import view_show
+from shows.view_show import view_shows
 from bookings.book_ticket import book_ticket
 from bookings.view_booking import view_bookings
 from bookings.search_booking import search_booking
@@ -28,8 +28,8 @@ def customer_menu():
             case "1":
                 view_movies()
 
-            # case "2":
-            #     view_show()
+            case "2":
+                view_shows()
 
             case "3":
                 book_ticket()
