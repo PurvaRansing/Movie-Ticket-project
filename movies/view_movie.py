@@ -1,4 +1,9 @@
 from db_connection import get_connection
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+
+console = Console()
 
 def view_movies():
 
@@ -7,70 +12,82 @@ def view_movies():
 
     while True:
 
-        print("\n========== View Movies ==========")
-        print("1. View All Movies")
-        print("2. View Running Movies")
-        print("3. View Upcoming Movies")
-        print("4. Sort by Movie Name")
-        print("5. Sort by Rating")
-        print("6. Sort by Ticket Price")
-        print("7. Back")
+        console.print(
+            Panel.fit(
+                "[bold cyan]VIEW MOVIES[/bold cyan]",
+                border_style="green"
+            )
+        )
 
-        choice = input("Enter your choice : ")
+        console.print("1. View All Movies")
+        console.print("2. Sort by Movie Name")
+        console.print("3. Sort by Rating")
+        console.print("4. Back")
+
+        choice = input("\nEnter Your Choice : ")
 
         match choice:
 
             case "1":
+
                 cursor.execute("SELECT * FROM movies")
 
             case "2":
-                cursor.execute("SELECT * FROM movies WHERE status = ?", ("Running",))
+
+                cursor.execute(
+                    "SELECT * FROM movies ORDER BY movie_name"
+                )
 
             case "3":
-                cursor.execute("SELECT * FROM movies WHERE status = ?", ("Upcoming",))
+
+                cursor.execute(
+                    "SELECT * FROM movies ORDER BY rating DESC"
+                )
 
             case "4":
-                cursor.execute("SELECT * FROM movies ORDER BY title ASC")
 
-            case "5":
-                cursor.execute("SELECT * FROM movies ORDER BY rating DESC")
-
-            case "6":
-                cursor.execute("SELECT * FROM movies ORDER BY price ASC")
-
-            case "7":
                 conn.close()
                 return
 
             case _:
-                print("Invalid Choice.")
+
+                console.print("[red]Invalid Choice.[/red]")
                 continue
 
         movies = cursor.fetchall()
 
         if len(movies) == 0:
-            print("\nNo Movies Found.")
+
+            console.print("[red]No Movies Found.[/red]")
             continue
 
-        print("\n==============================================================================================================")
-        print("Movie ID\tMovie Name\tGenre\t\tLanguage\tDuration\tRating\tPrice\tStatus")
-        print("==============================================================================================================")
+        table = Table(title="Movie Details")
+
+        table.add_column("Movie ID", style="cyan", justify="center")
+        table.add_column("Movie Name", style="green")
+        table.add_column("Genre", style="yellow")
+        table.add_column("Language", style="magenta")
+        table.add_column("Duration", justify="center")
+        table.add_column("Rating", justify="center")
+        table.add_column("Price", justify="right", style="red")
+        table.add_column("Status", justify="center", style="blue")
 
         for movie in movies:
 
-            print(
-                movie[0], "\t",
-                movie[1], "\t",
-                movie[2], "\t",
-                movie[3], "\t",
-                movie[4], "\t\t",
-                movie[5], "\t",
-                movie[6], "\t",
-                movie[7]
+            table.add_row(
+                str(movie[0]),
+                str(movie[1]),
+                str(movie[2]),
+                str(movie[3]),
+                str(movie[4]) + " Min",
+                str(movie[5]),
+                "₹" + str(movie[6]),
+                str(movie[7])
             )
 
-        print("==============================================================================================================")
+        console.print(table)
 
+    conn.close()
         
             
                 

@@ -1,4 +1,9 @@
 from db_connection import get_connection
+from rich.console import Console
+from rich.panel import Panel
+
+console = Console()
+
 
 def delete_theatre():
 
@@ -7,11 +12,17 @@ def delete_theatre():
 
     while True:
 
-        print("\n========== Delete Theatre ==========")
-        print("1. Delete Theatre")
-        print("2. Back")
+        console.print(
+            Panel.fit(
+                "[bold red]DELETE THEATRE[/bold red]",
+                border_style="red"
+            )
+        )
 
-        choice = input("Enter your choice : ")
+        console.print("1. Delete Theatre")
+        console.print("2. Back")
+
+        choice = input("\nEnter Your Choice : ")
 
         match choice:
 
@@ -28,12 +39,18 @@ def delete_theatre():
 
                 if theatre is None:
 
-                    print("Theatre Not Found.")
+                    console.print("[bold red]Theatre Not Found.[/bold red]")
                     continue
 
-                confirm = input("Are you sure you want to delete this theatre? (Y/N) : ")
+                console.print("\n[bold yellow]Theatre Details[/bold yellow]")
+                console.print(f"Theatre ID      : {theatre[0]}")
+                console.print(f"Theatre Name    : {theatre[1]}")
+                console.print(f"City            : {theatre[2]}")
+                console.print(f"Total Screens   : {theatre[3]}")
 
-                if confirm == "Y" or confirm == "y":
+                confirm = input("\nAre you sure you want to delete this theatre? (Y/N) : ")
+
+                if confirm.upper() == "Y":
 
                     cursor.execute(
                         "DELETE FROM theatres WHERE theatre_id = ?",
@@ -42,11 +59,11 @@ def delete_theatre():
 
                     conn.commit()
 
-                    print("Theatre Deleted Successfully.")
+                    console.print("[bold green]✓ Theatre Deleted Successfully[/bold green]")
 
                 else:
 
-                    print("Deletion Cancelled.")
+                    console.print("[bold yellow]Deletion Cancelled.[/bold yellow]")
 
             case "2":
 
@@ -55,7 +72,8 @@ def delete_theatre():
 
             case _:
 
-                print("Invalid Choice.")
+                console.print("[bold red]Invalid Choice.[/bold red]")
+
 
 if __name__ == "__main__":
     delete_theatre()

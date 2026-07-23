@@ -1,5 +1,13 @@
 from db_connection import get_connection
 
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+
+
+console = Console()
+
+
 def payment_report():
 
     conn = get_connection()
@@ -9,27 +17,50 @@ def payment_report():
 
     payments = cursor.fetchall()
 
-    print("\n============== Payment Report ==============")
+    console.print(
+        Panel(
+            "Payment Report",
+            title="Reports"
+        )
+    )
 
     if len(payments) == 0:
 
-        print("No Payments Found.")
+        console.print(
+            "[red]No Payments Found.[/red]"
+        )
 
     else:
 
-        print("Payment ID\tBooking ID\tMethod\t\tAmount\t\tDate\t\tStatus")
+        table = Table(
+            title="Payment Details"
+        )
+
+        table.add_column("Payment ID")
+        table.add_column("Booking ID")
+        table.add_column("Method")
+        table.add_column("Amount")
+        table.add_column("Date")
+        table.add_column("Status")
 
         for payment in payments:
 
-            print(
-                payment[0], "\t",
-                payment[1], "\t",
-                payment[2], "\t",
-                payment[3], "\t",
-                payment[4], "\t",
-                payment[5]
+            table.add_row(
+                str(payment[0]),
+                str(payment[1]),
+                str(payment[2]),
+                str(payment[3]),
+                str(payment[4]),
+                str(payment[5])
             )
 
-        print("\nTotal Payments :", len(payments))
+        console.print(table)
+
+        console.print(
+            Panel(
+                f"Total Payments : {len(payments)}",
+                title="Summary"
+            )
+        )
 
     conn.close()

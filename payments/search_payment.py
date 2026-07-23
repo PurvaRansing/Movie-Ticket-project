@@ -1,4 +1,9 @@
 from db_connection import get_connection
+from rich.table import Table
+from rich.console import Console
+
+console = Console()
+
 
 def search_payment():
 
@@ -15,85 +20,101 @@ def search_payment():
 
         choice = input("Enter your choice : ")
 
-        match choice:
 
-            case "1":
+        if choice == "1":
 
-                payment_id = input("Enter Payment ID : ")
+            payment_id = input("Enter Payment ID : ")
 
-                cursor.execute(
-                    "SELECT * FROM payments WHERE payment_id = ?",
-                    (payment_id,)
-                )
+            cursor.execute(
+                "SELECT * FROM payments WHERE payment_id=?",
+                (payment_id,)
+            )
 
-            case "2":
 
-                booking_id = input("Enter Booking ID : ")
+        elif choice == "2":
 
-                cursor.execute(
-                    "SELECT * FROM payments WHERE booking_id = ?",
-                    (booking_id,)
-                )
+            booking_id = input("Enter Booking ID : ")
 
-            case "3":
+            cursor.execute(
+                "SELECT * FROM payments WHERE booking_id=?",
+                (booking_id,)
+            )
 
-                print("\nPayment Methods")
-                print("1. Cash")
-                print("2. UPI")
-                print("3. Card")
 
-                method = input("Enter your choice : ")
+        elif choice == "3":
 
-                if method == "1":
-                    payment_method = "Cash"
+            print("\n1. Cash")
+            print("2. UPI")
+            print("3. Card")
 
-                elif method == "2":
-                    payment_method = "UPI"
+            method = input("Enter Payment Method : ")
 
-                elif method == "3":
-                    payment_method = "Card"
+            if method == "1":
+                payment_method = "Cash"
 
-                else:
-                    print("Invalid Choice.")
-                    continue
+            elif method == "2":
+                payment_method = "UPI"
 
-                cursor.execute(
-                    "SELECT * FROM payments WHERE payment_method = ?",
-                    (payment_method,)
-                )
+            elif method == "3":
+                payment_method = "Card"
 
-            case "4":
-
-                conn.close()
-                return
-
-            case _:
-
-                print("Invalid Choice.")
+            else:
+                print("Invalid Choice")
                 continue
 
+
+            cursor.execute(
+                "SELECT * FROM payments WHERE payment_method=?",
+                (payment_method,)
+            )
+
+
+        elif choice == "4":
+
+            break
+
+
+        else:
+
+            print("Invalid Choice")
+            continue
+
+
+
         payments = cursor.fetchall()
+
 
         if len(payments) == 0:
 
             print("\nNo Payment Found.")
             continue
 
-        print("\n=========================================================================================")
-        print("Payment ID\tBooking ID\tMethod\t\tDate\t\tAmount\tStatus")
-        print("=========================================================================================")
+
+
+        table = Table(title="Payment Details")
+
+
+        table.add_column("Payment ID")
+        table.add_column("Booking ID")
+        table.add_column("Method")
+        table.add_column("Date")
+        table.add_column("Amount")
+        table.add_column("Status")
+
 
         for payment in payments:
 
-            print(
-                payment[0], "\t",
-                payment[1], "\t",
-                payment[2], "\t",
-                payment[3], "\t",
-                payment[4], "\t",
-                payment[5]
+            table.add_row(
+                str(payment[0]),
+                str(payment[1]),
+                str(payment[2]),
+                str(payment[3]),
+                str(payment[4]),
+                str(payment[5])
             )
 
-        print("=========================================================================================")
+
+        console.print(table)
+
 
     conn.close()

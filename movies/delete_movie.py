@@ -1,4 +1,8 @@
 from db_connection import get_connection
+from rich.console import Console
+from rich.panel import Panel
+
+console = Console()
 
 def delete_movie():
 
@@ -7,84 +11,54 @@ def delete_movie():
 
     while True:
 
-        print("\n========== Delete Movie ==========")
-        print("1. Delete Movie by ID")
-        print("2. Delete All Removed Movies")
-        print("3. Back")
+        console.print(
+            Panel.fit(
+                "[bold red]DELETE MOVIE[/bold red]",
+                border_style="red"
+            )
+        )
 
-        choice = input("Enter your choice : ")
+        movie_id = input("Enter Movie ID (0 to Back): ")
 
-        match choice:
+        if movie_id == "0":
+            conn.close()
+            return
 
-            case "1":
+        cursor.execute(
+            "SELECT * FROM movies WHERE movie_id = ?",
+            (movie_id,)
+        )
 
-                movie_id = input("Enter Movie ID : ")
+        movie = cursor.fetchone()
 
-                cursor.execute(
-                    "SELECT * FROM movies WHERE movie_id = ?",
-                    (movie_id,)
-                )
+        if movie is None:
 
-                movie = cursor.fetchone()
+            console.print("[red]Movie Not Found.[/red]")
+            continue
 
-                if movie is None:
+        console.print("\nMovie Details")
+        console.print(f"Movie ID     : {movie[0]}")
+        console.print(f"Movie Name   : {movie[1]}")
+        console.print(f"Genre        : {movie[2]}")
+        console.print(f"Language     : {movie[3]}")
+        console.print(f"Duration     : {movie[4]} Minutes")
+        console.print(f"Rating       : {movie[5]}")
+        console.print(f"Price        : ₹{movie[6]}")
+        console.print(f"Status       : {movie[7]}")
 
-                    print("Movie ID not found.")
-                    continue
+        choice = input("\nAre you sure you want to delete this movie? (Y/N): ")
 
-                confirm = input("Are you sure you want to delete this movie? (Y/N) : ")
+        if choice.upper() == "Y":
 
-                if confirm == "Y" or confirm == "y":
+            cursor.execute(
+                "DELETE FROM movies WHERE movie_id = ?",
+                (movie_id,)
+            )
 
-                    cursor.execute(
-                        "DELETE FROM movies WHERE movie_id = ?",
-                        (movie_id,)
-                    )
+            conn.commit()
 
-                    conn.commit()
+            console.print("[bold green]Movie Deleted Successfully.[/bold green]")
 
-                    print("Movie Deleted Successfully.")
+        else:
 
-                else:
-
-                    print("Delete Cancelled.")
-
-            case "2":
-
-                cursor.execute(
-                    "SELECT * FROM movies WHERE status = ?",
-                    ("Removed",)
-                )
-
-                movies = cursor.fetchall()
-
-                if len(movies) == 0:
-
-                    print("No Removed Movies Found.")
-                    continue
-
-                confirm = input("Delete all removed movies? (Y/N) : ")
-
-                if confirm == "Y" or confirm == "y":
-
-                    cursor.execute(
-                        "DELETE FROM movies WHERE status = ?",
-                        ("Removed",)
-                    )
-
-                    conn.commit()
-
-                    print("All Removed Movies Deleted Successfully.")
-
-                else:
-
-                    print("Delete Cancelled.")
-
-            case "3":
-
-                conn.close()
-                return
-
-            case _:
-
-                print("Invalid Choice.")
+            console.print("[yellow]Delete Cancelled.[/yellow]")

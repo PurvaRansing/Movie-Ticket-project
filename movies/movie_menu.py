@@ -4,20 +4,31 @@ from movies.update_movie import update_movie
 from movies.delete_movie import delete_movie
 from movies.search_movie import search_movie
 
+from rich.console import Console
+from rich.panel import Panel
+
+console = Console()
+
 
 def movie_menu():
 
     while True:
 
-        print("\n========== Movie Management ==========")
-        print("1. Add Movie")
-        print("2. View Movies")
-        print("3. Update Movie")
-        print("4. Delete Movie")
-        print("5. Search Movie")
-        print("6. Back")
+        console.print(
+            Panel.fit(
+                "[bold cyan]🎬 MOVIE MANAGEMENT[/bold cyan]",
+                border_style="green"
+            )
+        )
 
-        choice = input("Enter your choice : ")
+        console.print("[cyan]1.[/cyan] ➕ Add Movie")
+        console.print("[cyan]2.[/cyan] 🎥 View Movies")
+        console.print("[cyan]3.[/cyan] ✏️ Update Movie")
+        console.print("[cyan]4.[/cyan] 🗑 Delete Movie")
+        console.print("[cyan]5.[/cyan] 🔍 Search Movie")
+        console.print("[cyan]6.[/cyan] 🔙 Back")
+
+        choice = input("\nEnter Your Choice : ")
 
         match choice:
 
@@ -37,7 +48,8 @@ def movie_menu():
                 search_movie()
 
             case "6":
+                console.print("[bold yellow]Returning to Admin Menu...[/bold yellow]")
                 return
 
             case _:
-                print("Invalid Choice.")
+                console.print("[bold red]Invalid Choice! Please Try Again.[/bold red]")

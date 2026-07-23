@@ -2,15 +2,29 @@ from reports.movie_chart import movie_chart
 from reports.booking_chart import booking_chart
 from reports.payment_chart import payment_chart
 
+from rich.console import Console
+from rich.panel import Panel
+
+
+console = Console()
+
+
 def chart_menu():
 
     while True:
 
-        print("\n========== Charts ==========")
-        print("1. Movie Chart")
-        print("2. Booking Chart")
-        print("3. Payment Chart")
-        print("4. Return to Admin Menu")
+        console.print(
+            Panel(
+                """
+1. Movie Chart
+2. Booking Chart
+3. Payment Chart
+4. Return to Admin Menu
+                """,
+                title="Charts",
+                border_style="cyan"
+            )
+        )
 
         choice = input("Enter your choice : ")
 
@@ -29,4 +43,4 @@ def chart_menu():
                 return
 
             case _:
-                print("Invalid Choice.")
+                console.print("[red]Invalid Choice.[/red]")

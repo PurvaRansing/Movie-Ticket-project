@@ -1,5 +1,13 @@
 from db_connection import get_connection
 
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+
+
+console = Console()
+
+
 def booking_report():
 
     conn = get_connection()
@@ -9,28 +17,60 @@ def booking_report():
 
     bookings = cursor.fetchall()
 
-    print("\n============== Booking Report ==============")
+
+    console.print(
+        Panel(
+            "Booking Report",
+            title="Reports"
+        )
+    )
+
 
     if len(bookings) == 0:
 
-        print("No Bookings Found.")
+        console.print(
+            "[red]No Bookings Found.[/red]"
+        )
+
 
     else:
 
-        print("Booking ID\tUser ID\t\tShow ID\t\tSeat No\t\tAmount\t\tBooking Date\tStatus")
+        table = Table(
+            title="Booking Details"
+        )
+
+
+        table.add_column("Booking ID")
+        table.add_column("User ID")
+        table.add_column("Show ID")
+        table.add_column("Seat No")
+        table.add_column("Amount")
+        table.add_column("Booking Date")
+        table.add_column("Status")
+
 
         for booking in bookings:
 
-            print(
-                booking[0], "\t",
-                booking[1], "\t",
-                booking[2], "\t",
-                booking[3], "\t",
-                booking[4], "\t",
-                booking[5], "\t",
-                booking[6]
+            table.add_row(
+                str(booking[0]),
+                str(booking[1]),
+                str(booking[2]),
+                str(booking[3]),
+                str(booking[4]),
+                str(booking[5]),
+                str(booking[6])
             )
 
-        print("\nTotal Bookings :", len(bookings))
+
+        console.print(table)
+
+
+        console.print(
+            Panel(
+                f"Total Bookings : {len(bookings)}",
+                title="Summary"
+            )
+        )
+
 
     conn.close()

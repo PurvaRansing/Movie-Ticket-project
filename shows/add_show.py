@@ -1,16 +1,26 @@
 from db_connection import get_connection
+from rich.console import Console
+from rich.panel import Panel
+
+console = Console()
+
 
 def add_show():
 
     conn = get_connection()
     cursor = conn.cursor()
 
-    print("\n========== Add Show ==========")
+    console.print(
+        Panel.fit(
+            "[bold cyan]ADD SHOW[/bold cyan]",
+            border_style="green"
+        )
+    )
 
-    movie_id = input("Enter Movie ID : ")
-    theatre_id = input("Enter Theatre ID : ")
-    show_date = input("Enter Show Date (DD-MM-YYYY) : ")
-    show_time = input("Enter Show Time : ")
+    movie_id = input("Enter Movie ID : ").strip()
+    theatre_id = input("Enter Theatre ID : ").strip()
+    show_date = input("Enter Show Date (DD-MM-YYYY) : ").strip()
+    show_time = input("Enter Show Time : ").strip()
 
     # Check Movie ID
     cursor.execute(
@@ -22,7 +32,7 @@ def add_show():
 
     if movie is None:
 
-        print("Movie Not Found.")
+        console.print("[bold red]Movie Not Found.[/bold red]")
         conn.close()
         return
 
@@ -36,16 +46,39 @@ def add_show():
 
     if theatre is None:
 
-        print("Theatre Not Found.")
+        console.print("[bold red]Theatre Not Found.[/bold red]")
+        conn.close()
+        return
+
+    # Check Duplicate Show
+    cursor.execute(
+        """
+        SELECT * FROM shows
+        WHERE movie_id = ?
+        AND theatre_id = ?
+        AND show_date = ?
+        AND show_time = ?
+        """,
+        (
+            movie_id,
+            theatre_id,
+            show_date,
+            show_time
+        )
+    )
+
+    show = cursor.fetchone()
+
+    if show:
+
+        console.print("[bold red]Show Already Exists.[/bold red]")
         conn.close()
         return
 
     # Generate Show ID
     cursor.execute("SELECT COUNT(*) FROM shows")
 
-    result = cursor.fetchone()
-
-    count = result[0]
+    count = cursor.fetchone()[0]
 
     show_id = "SHW" + str(101 + count)
 
@@ -64,9 +97,11 @@ def add_show():
 
     conn.commit()
 
-    print("\n================================")
-    print("Show Added Successfully")
-    print("Show ID :", show_id)
-    print("================================")
+    console.print("\n[bold green]✓ Show Added Successfully[/bold green]")
+    console.print(f"[cyan]Show ID :[/cyan] {show_id}")
 
     conn.close()
+
+
+if __name__ == "__main__":
+    add_show()

@@ -1,4 +1,10 @@
 from db_connection import get_connection
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+
+console = Console()
+
 
 def search_show():
 
@@ -7,14 +13,20 @@ def search_show():
 
     while True:
 
-        print("\n========== Search Show ==========")
-        print("1. Search by Show ID")
-        print("2. Search by Movie ID")
-        print("3. Search by Theatre ID")
-        print("4. Search by Show Date")
-        print("5. Back")
+        console.print(
+            Panel.fit(
+                "[bold cyan]SEARCH SHOW[/bold cyan]",
+                border_style="green"
+            )
+        )
 
-        choice = input("Enter your choice : ")
+        console.print("1. Search by Show ID")
+        console.print("2. Search by Movie ID")
+        console.print("3. Search by Theatre ID")
+        console.print("4. Search by Show Date")
+        console.print("5. Back")
+
+        choice = input("\nEnter Your Choice : ")
 
         match choice:
 
@@ -61,30 +73,36 @@ def search_show():
 
             case _:
 
-                print("Invalid Choice.")
+                console.print("[bold red]Invalid Choice.[/bold red]")
                 continue
 
         shows = cursor.fetchall()
 
         if len(shows) == 0:
 
-            print("\nNo Show Found.")
+            console.print("[bold red]No Show Found.[/bold red]")
             continue
 
-        print("\n==============================================================================")
-        print("Show ID\tMovie ID\tTheatre ID\tShow Date\tShow Time")
-        print("==============================================================================")
+        table = Table(title="Search Result")
+
+        table.add_column("Show ID", style="cyan", justify="center")
+        table.add_column("Movie ID", style="green", justify="center")
+        table.add_column("Theatre ID", style="yellow", justify="center")
+        table.add_column("Show Date", style="magenta", justify="center")
+        table.add_column("Show Time", style="blue", justify="center")
 
         for show in shows:
 
-            print(
-                show[0], "\t",
-                show[1], "\t",
-                show[2], "\t",
-                show[3], "\t",
-                show[4]
+            table.add_row(
+                str(show[0]),
+                str(show[1]),
+                str(show[2]),
+                str(show[3]),
+                str(show[4])
             )
 
-        print("==============================================================================")
+        console.print(table)
 
-    conn.close()
+
+if __name__ == "__main__":
+    search_show()

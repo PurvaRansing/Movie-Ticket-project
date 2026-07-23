@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS bookings(
     user_id TEXT,
     show_id TEXT,
     seat_no TEXT,
+    total_seats INTEGER,
     total_amount REAL,
     booking_date TEXT,
     status TEXT,
@@ -80,6 +81,7 @@ CREATE TABLE IF NOT EXISTS bookings(
     FOREIGN KEY(show_id) REFERENCES shows(show_id)
 )
 """)
+
 
 # Payments Table
 cursor.execute("""
@@ -90,6 +92,8 @@ CREATE TABLE IF NOT EXISTS payments(
     amount REAL,
     payment_date TEXT,
     payment_status TEXT,
+    razorpay_payment_id TEXT,
+    receipt_path TEXT,
     FOREIGN KEY(booking_id) REFERENCES bookings(booking_id)
 )
 """)

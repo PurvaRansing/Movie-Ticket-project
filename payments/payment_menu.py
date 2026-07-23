@@ -3,17 +3,30 @@ from payments.view_payment import view_payments
 from payments.search_payment import search_payment
 
 
+from rich.console import Console
+from rich.panel import Panel
+
+console = Console()
+
+
 def payment_menu():
 
     while True:
 
-        print("\n========== Payment Management ==========")
-        print("1. Make Payment")
-        print("2. View Payments")
-        print("3. Search Payment")
-        print("4. Return to Admin Menu")
+        console.print(
+            Panel.fit(
+                "[bold cyan]PAYMENT MANAGEMENT[/bold cyan]",
+                border_style="green"
+            )
+        )
 
-        choice = input("Enter your choice : ")
+        console.print("1. Make Payment")
+        console.print("2. View Payments")
+        console.print("3. Search Payment")
+        console.print("4. Payment Report")
+        console.print("5. Back")
+
+        choice = input("\nEnter Your Choice : ")
 
         match choice:
 
@@ -30,4 +43,8 @@ def payment_menu():
                 return
 
             case _:
-                print("Invalid Choice.")
+                console.print("[bold red]Invalid Choice.[/bold red]")
+
+
+if __name__ == "__main__":
+    payment_menu()

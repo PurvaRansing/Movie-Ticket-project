@@ -1,4 +1,8 @@
 from db_connection import get_connection
+from rich.console import Console
+from rich.panel import Panel
+
+console = Console()
 
 def update_movie():
 
@@ -7,17 +11,23 @@ def update_movie():
 
     while True:
 
-        print("\n========== Update Movie ==========")
-        print("1. Update Movie Name")
-        print("2. Update Genre")
-        print("3. Update Language")
-        print("4. Update Duration")
-        print("5. Update Rating")
-        print("6. Update Ticket Price")
-        print("7. Update Status")
-        print("8. Back")
+        console.print(
+            Panel.fit(
+                "[bold cyan]UPDATE MOVIE[/bold cyan]",
+                border_style="green"
+            )
+        )
 
-        choice = input("Enter your choice : ")
+        console.print("1. Update Movie Name")
+        console.print("2. Update Genre")
+        console.print("3. Update Language")
+        console.print("4. Update Duration")
+        console.print("5. Update Rating")
+        console.print("6. Update Ticket Price")
+        console.print("7. Update Status")
+        console.print("8. Back")
+
+        choice = input("\nEnter Your Choice : ")
 
         if choice == "8":
             conn.close()
@@ -25,56 +35,36 @@ def update_movie():
 
         movie_id = input("Enter Movie ID : ")
 
-        cursor.execute("SELECT * FROM movies WHERE movie_id = ?", (movie_id,))
+        cursor.execute(
+            "SELECT * FROM movies WHERE movie_id = ?",
+            (movie_id,)
+        )
+
         movie = cursor.fetchone()
 
         if movie is None:
-            print("Movie ID not found.")
+
+            console.print("[red]Movie Not Found.[/red]")
             continue
 
         match choice:
 
             case "1":
 
-                new_name = input("Enter New Movie Name : ")
+                movie_name = input("Enter New Movie Name : ")
 
                 cursor.execute(
-                    "UPDATE movies SET movie_name = ? WHERE title = ?",
-                    (new_name, movie_id)
+                    "UPDATE movies SET movie_name = ? WHERE movie_id = ?",
+                    (movie_name, movie_id)
                 )
 
                 conn.commit()
-                print("Movie Name Updated Successfully.")
+
+                console.print("[green]Movie Name Updated Successfully.[/green]")
 
             case "2":
 
-                print("\nSelect Genre")
-                print("1. Action")
-                print("2. Comedy")
-                print("3. Horror")
-                print("4. Romance")
-                print("5. Thriller")
-                print("6. Drama")
-
-                genre_choice = input("Enter your choice : ")
-
-                match genre_choice:
-
-                    case "1":
-                        genre = "Action"
-                    case "2":
-                        genre = "Comedy"
-                    case "3":
-                        genre = "Horror"
-                    case "4":
-                        genre = "Romance"
-                    case "5":
-                        genre = "Thriller"
-                    case "6":
-                        genre = "Drama"
-                    case _:
-                        print("Invalid Choice.")
-                        continue
+                genre = input("Enter New Genre : ")
 
                 cursor.execute(
                     "UPDATE movies SET genre = ? WHERE movie_id = ?",
@@ -82,37 +72,12 @@ def update_movie():
                 )
 
                 conn.commit()
-                print("Genre Updated Successfully.")
+
+                console.print("[green]Genre Updated Successfully.[/green]")
 
             case "3":
 
-                print("\nSelect Language")
-                print("1. Hindi")
-                print("2. English")
-                print("3. Marathi")
-                print("4. Tamil")
-                print("5. Telugu")
-                print("6. Malayalam")
-
-                language_choice = input("Enter your choice : ")
-
-                match language_choice:
-
-                    case "1":
-                        language = "Hindi"
-                    case "2":
-                        language = "English"
-                    case "3":
-                        language = "Marathi"
-                    case "4":
-                        language = "Tamil"
-                    case "5":
-                        language = "Telugu"
-                    case "6":
-                        language = "Malayalam"
-                    case _:
-                        print("Invalid Choice.")
-                        continue
+                language = input("Enter New Language : ")
 
                 cursor.execute(
                     "UPDATE movies SET language = ? WHERE movie_id = ?",
@@ -120,11 +85,19 @@ def update_movie():
                 )
 
                 conn.commit()
-                print("Language Updated Successfully.")
+
+                console.print("[green]Language Updated Successfully.[/green]")
 
             case "4":
 
-                duration = int(input("Enter New Duration : "))
+                try:
+
+                    duration = int(input("Enter New Duration : "))
+
+                except:
+
+                    console.print("[red]Invalid Duration.[/red]")
+                    continue
 
                 cursor.execute(
                     "UPDATE movies SET duration = ? WHERE movie_id = ?",
@@ -132,14 +105,23 @@ def update_movie():
                 )
 
                 conn.commit()
-                print("Duration Updated Successfully.")
+
+                console.print("[green]Duration Updated Successfully.[/green]")
 
             case "5":
 
-                rating = float(input("Enter New Rating : "))
+                try:
+
+                    rating = float(input("Enter New Rating : "))
+
+                except:
+
+                    console.print("[red]Invalid Rating.[/red]")
+                    continue
 
                 if rating < 1 or rating > 10:
-                    print("Rating must be between 1 and 10.")
+
+                    console.print("[red]Rating Must Be Between 1 and 10.[/red]")
                     continue
 
                 cursor.execute(
@@ -148,14 +130,23 @@ def update_movie():
                 )
 
                 conn.commit()
-                print("Rating Updated Successfully.")
+
+                console.print("[green]Rating Updated Successfully.[/green]")
 
             case "6":
 
-                price = float(input("Enter New Ticket Price : "))
+                try:
+
+                    price = float(input("Enter New Ticket Price : "))
+
+                except:
+
+                    console.print("[red]Invalid Price.[/red]")
+                    continue
 
                 if price <= 0:
-                    print("Invalid Price.")
+
+                    console.print("[red]Price Must Be Greater Than 0.[/red]")
                     continue
 
                 cursor.execute(
@@ -164,27 +155,31 @@ def update_movie():
                 )
 
                 conn.commit()
-                print("Ticket Price Updated Successfully.")
+
+                console.print("[green]Ticket Price Updated Successfully.[/green]")
 
             case "7":
 
-                print("\nSelect Status")
-                print("1. Running")
-                print("2. Upcoming")
-                print("3. Removed")
+                console.print("\n1. Running")
+                console.print("2. Upcoming")
+                console.print("3. Removed")
 
-                status_choice = input("Enter your choice : ")
+                status_choice = input("Enter Choice : ")
 
                 match status_choice:
 
                     case "1":
                         status = "Running"
+
                     case "2":
                         status = "Upcoming"
+
                     case "3":
                         status = "Removed"
+
                     case _:
-                        print("Invalid Choice.")
+
+                        console.print("[red]Invalid Status.[/red]")
                         continue
 
                 cursor.execute(
@@ -193,11 +188,12 @@ def update_movie():
                 )
 
                 conn.commit()
-                print("Status Updated Successfully.")
+
+                console.print("[green]Status Updated Successfully.[/green]")
 
             case _:
 
-                print("Invalid Choice.")
+                console.print("[red]Invalid Choice.[/red]")
 
 
         

@@ -1,4 +1,9 @@
 from db_connection import get_connection
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+
+console = Console()
 
 def search_movie():
 
@@ -7,16 +12,20 @@ def search_movie():
 
     while True:
 
-        print("\n========== Search Movie ==========")
-        print("1. Search by Movie ID")
-        print("2. Search by Movie Name")
-        print("3. Search by Genre")
-        print("4. Search by Language")
-        print("5. Search by Rating")
-        print("6. Search by Ticket Price")
-        print("7. Back")
+        console.print(
+            Panel.fit(
+                "[bold cyan]SEARCH MOVIE[/bold cyan]",
+                border_style="green"
+            )
+        )
 
-        choice = input("Enter your choice : ")
+        console.print("1. Search By Movie ID")
+        console.print("2. Search By Movie Name")
+        console.print("3. Search By Genre")
+        console.print("4. Search By Status")
+        console.print("5. Back")
+
+        choice = input("\nEnter Your Choice : ")
 
         match choice:
 
@@ -34,8 +43,8 @@ def search_movie():
                 movie_name = input("Enter Movie Name : ")
 
                 cursor.execute(
-                    "SELECT * FROM movies WHERE title = ?",
-                    (movie_name,)
+                    "SELECT * FROM movies WHERE movie_name LIKE ?",
+                    ('%' + movie_name + '%',)
                 )
 
             case "3":
@@ -43,70 +52,61 @@ def search_movie():
                 genre = input("Enter Genre : ")
 
                 cursor.execute(
-                    "SELECT * FROM movies WHERE genre = ?",
-                    (genre,)
+                    "SELECT * FROM movies WHERE genre LIKE ?",
+                    ('%' + genre + '%',)
                 )
 
             case "4":
 
-                language = input("Enter Language : ")
+                status = input("Enter Status (Running/Upcoming/Removed) : ")
 
                 cursor.execute(
-                    "SELECT * FROM movies WHERE language = ?",
-                    (language,)
+                    "SELECT * FROM movies WHERE status = ?",
+                    (status,)
                 )
 
             case "5":
-
-                rating = float(input("Enter Rating : "))
-
-                cursor.execute(
-                    "SELECT * FROM movies WHERE rating >= ?",
-                    (rating,)
-                )
-
-            case "6":
-
-                price = float(input("Enter Maximum Ticket Price : "))
-
-                cursor.execute(
-                    "SELECT * FROM movies WHERE price <= ?",
-                    (price,)
-                )
-
-            case "7":
 
                 conn.close()
                 return
 
             case _:
 
-                print("Invalid Choice.")
+                console.print("[red]Invalid Choice.[/red]")
                 continue
 
         movies = cursor.fetchall()
 
         if len(movies) == 0:
 
-            print("\nNo Movies Found.")
+            console.print("[red]No Movie Found.[/red]")
             continue
 
-        print("\n==========================================================================================================")
-        print("Movie ID\tMovie Name\tGenre\t\tLanguage\tDuration\tRating\tPrice\tStatus")
-        print("==========================================================================================================")
+        table = Table(title="Search Result")
+
+        table.add_column("Movie ID", style="cyan", justify="center")
+        table.add_column("Movie Name", style="green")
+        table.add_column("Genre", style="yellow")
+        table.add_column("Language", style="magenta")
+        table.add_column("Duration", justify="center")
+        table.add_column("Rating", justify="center")
+        table.add_column("Price", justify="right", style="red")
+        table.add_column("Status", justify="center", style="blue")
 
         for movie in movies:
 
-            print(
-                movie[0], "\t",
-                movie[1], "\t",
-                movie[2], "\t",
-                movie[3], "\t",
-                movie[4], "\t\t",
-                movie[5], "\t",
-                movie[6], "\t",
-                movie[7]
+            table.add_row(
+                str(movie[0]),
+                str(movie[1]),
+                str(movie[2]),
+                str(movie[3]),
+                str(movie[4]) + " Min",
+                str(movie[5]),
+                "₹" + str(movie[6]),
+                str(movie[7])
             )
 
-        print("==========================================================================================================")
+        console.print(table)
+
+    conn.close()
 

@@ -1,33 +1,52 @@
-from reports.movie_report import movie_report
 from reports.booking_report import booking_report
+from reports.movie_report import movie_report
 from reports.payment_report import payment_report
+from reports.chart_menu import chart_menu
+
+from rich.console import Console
+from rich.panel import Panel
+
+
+console = Console()
 
 
 def report_menu():
 
     while True:
 
-        print("\n========== Reports ==========")
-        print("1. Movie Report")
-        print("2. Booking Report")
-        print("3. Payment Report")
-        print("4. Return to Admin Menu")
+        console.print(
+            Panel(
+                """
+1. Booking Report
+2. Movie Report
+3. Payment Report
+4. Charts
+5. Back
+                """,
+                title="Reports Menu",
+                border_style="blue"
+            )
+        )
 
         choice = input("Enter your choice : ")
 
-        match choice:
 
-            case "1":
-                movie_report()
+        if choice == "1":
+            booking_report()
 
-            case "2":
-                booking_report()
+        elif choice == "2":
+            movie_report()
 
-            case "3":
-                payment_report()
+        elif choice == "3":
+            payment_report()
 
-            case "4":
-                return
+        elif choice == "4":
+            chart_menu()
 
-            case _:
-                print("Invalid Choice.")
+        elif choice == "5":
+            break
+
+        else:
+            console.print(
+                "[red]Invalid Choice[/red]"
+            )

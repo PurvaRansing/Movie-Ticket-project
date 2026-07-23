@@ -1,4 +1,9 @@
 from db_connection import get_connection
+from rich.console import Console
+from rich.panel import Panel
+
+console = Console()
+
 
 def update_show():
 
@@ -7,13 +12,19 @@ def update_show():
 
     while True:
 
-        print("\n========== Update Show ==========")
-        print("1. Update Show Date")
-        print("2. Update Show Time")
-        print("3. Update Theatre")
-        print("4. Back")
+        console.print(
+            Panel.fit(
+                "[bold cyan]UPDATE SHOW[/bold cyan]",
+                border_style="green"
+            )
+        )
 
-        choice = input("Enter your choice : ")
+        console.print("1. Update Show Date")
+        console.print("2. Update Show Time")
+        console.print("3. Update Theatre")
+        console.print("4. Back")
+
+        choice = input("\nEnter Your Choice : ")
 
         if choice == "4":
             conn.close()
@@ -30,7 +41,7 @@ def update_show():
 
         if show is None:
 
-            print("Show Not Found.")
+            console.print("[bold red]Show Not Found.[/bold red]")
             continue
 
         match choice:
@@ -50,7 +61,7 @@ def update_show():
 
                 conn.commit()
 
-                print("Show Date Updated Successfully.")
+                console.print("[bold green]✓ Show Date Updated Successfully[/bold green]")
 
             case "2":
 
@@ -67,7 +78,7 @@ def update_show():
 
                 conn.commit()
 
-                print("Show Time Updated Successfully.")
+                console.print("[bold green]✓ Show Time Updated Successfully[/bold green]")
 
             case "3":
 
@@ -82,7 +93,7 @@ def update_show():
 
                 if theatre is None:
 
-                    print("Theatre Not Found.")
+                    console.print("[bold red]Theatre Not Found.[/bold red]")
                     continue
 
                 cursor.execute(
@@ -96,8 +107,12 @@ def update_show():
 
                 conn.commit()
 
-                print("Theatre Updated Successfully.")
+                console.print("[bold green]✓ Theatre Updated Successfully[/bold green]")
 
             case _:
 
-                print("Invalid Choice.")
+                console.print("[bold red]Invalid Choice.[/bold red]")
+
+
+if __name__ == "__main__":
+    update_show()

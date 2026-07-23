@@ -1,15 +1,38 @@
 from db_connection import get_connection
+from rich.console import Console
+from rich.panel import Panel
+
+console = Console()
+
 
 def add_theatre():
 
     conn = get_connection()
     cursor = conn.cursor()
 
-    print("\n========== Add Theatre ==========")
+    console.print(
+        Panel.fit(
+            "[bold cyan]ADD THEATRE[/bold cyan]",
+            border_style="green"
+        )
+    )
 
-    theatre_name = input("Enter Theatre Name : ")
-    city = input("Enter City : ")
-    total_screens = int(input("Enter Total Screens : "))
+    theatre_name = input("Enter Theatre Name : ").strip()
+    city = input("Enter City : ").strip()
+
+    try:
+        total_screens = int(input("Enter Total Screens : "))
+
+        if total_screens <= 0:
+            console.print("[bold red]Total Screens must be greater than 0.[/bold red]")
+            conn.close()
+            return
+
+    except:
+
+        console.print("[bold red]Invalid Number of Screens.[/bold red]")
+        conn.close()
+        return
 
     cursor.execute(
         "SELECT * FROM theatres WHERE theatre_name = ?",
@@ -18,19 +41,17 @@ def add_theatre():
 
     theatre = cursor.fetchone()
 
-    if theatre is not None:
+    if theatre:
 
-        print("Theatre Already Exists.")
+        console.print("[bold red]Theatre Already Exists.[/bold red]")
         conn.close()
         return
 
-    cursor.execute("SELECT theatre_id FROM theatres ORDER BY theatre_id DESC LIMIT 1")
-    result = cursor.fetchone()
+    cursor.execute("SELECT COUNT(*) FROM theatres")
 
-    if result:
-        theatre_id = "THR" + str(int(result[0][3:]) + 1)
-    else:
-        theatre_id = "THR101"
+    count = cursor.fetchone()[0]
+
+    theatre_id = "THR" + str(101 + count)
 
     cursor.execute("""
     INSERT INTO theatres
@@ -45,12 +66,11 @@ def add_theatre():
 
     conn.commit()
 
-    print("\n================================")
-    print("Theatre Added Successfully")
-    print("Theatre ID :", theatre_id)
-    print("================================")
+    console.print("\n[bold green]✓ Theatre Added Successfully[/bold green]")
+    console.print(f"[cyan]Theatre ID :[/cyan] {theatre_id}")
 
     conn.close()
+
 
 if __name__ == "__main__":
     add_theatre()

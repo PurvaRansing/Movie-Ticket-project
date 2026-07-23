@@ -1,28 +1,52 @@
 from db_connection import get_connection
+from rich.console import Console
+from rich.panel import Panel
+
+console = Console()
 
 def add_movie():
-    
-    print("STEP A")
-
 
     conn = get_connection()
     cursor = conn.cursor()
 
-    print("\n========== Add Movie ==========")
+    console.print(
+        Panel.fit(
+            "[bold cyan]ADD MOVIE[/bold cyan]",
+            border_style="green"
+        )
+    )
 
-    movie_name = input("Enter Movie Name : ")
-    genre = input("Enter Genre : ")
-    language = input("Enter Language : ")
-    duration = int(input("Enter Duration (Minutes) : "))
-    rating = float(input("Enter Rating : "))
-    price = float(input("Enter Ticket Price : "))
+    movie_name = input("Enter Movie Name : ").strip()
+    genre = input("Enter Genre : ").strip()
+    language = input("Enter Language : ").strip()
 
-    print("\nSelect Movie Status")
-    print("1. Running")
-    print("2. Upcoming")
-    print("3. Removed")
+    try:
+        duration = int(input("Enter Duration (Minutes) : "))
+    except:
+        console.print("[red]Invalid Duration.[/red]")
+        conn.close()
+        return
 
-    choice = input("Enter your choice : ")
+    try:
+        rating = float(input("Enter Rating : "))
+    except:
+        console.print("[red]Invalid Rating.[/red]")
+        conn.close()
+        return
+
+    try:
+        price = float(input("Enter Ticket Price : "))
+    except:
+        console.print("[red]Invalid Price.[/red]")
+        conn.close()
+        return
+
+    console.print("\n[bold yellow]Select Movie Status[/bold yellow]")
+    console.print("1. Running")
+    console.print("2. Upcoming")
+    console.print("3. Removed")
+
+    choice = input("Enter Choice : ")
 
     match choice:
 
@@ -36,44 +60,34 @@ def add_movie():
             status = "Removed"
 
         case _:
-            print("Invalid Status.")
+            console.print("[red]Invalid Status.[/red]")
             conn.close()
             return
 
-    print("STEP B")
-
-
-    # Check Duplicate Movie
     cursor.execute(
-        "SELECT * FROM movies WHERE title = ?",
+        "SELECT * FROM movies WHERE movie_name = ?",
         (movie_name,)
     )
 
-    result = cursor.fetchone()
+    movie = cursor.fetchone()
 
-    if result:
+    if movie:
 
-        print("\nMovie already exists.")
+        console.print("[red]Movie Already Exists.[/red]")
         conn.close()
         return
 
-    # Generate Movie ID
     cursor.execute("SELECT COUNT(*) FROM movies")
 
-    result = cursor.fetchone()
+    count = cursor.fetchone()[0]
 
-    count = result[0]
-    count = count + 1
+    movie_id = "MOV" + str(101 + count)
 
-    movie_id = "MOV" + str(100 + count)
-    
-    print("STEP C")
-
-    # Insert Movie
     cursor.execute("""
     INSERT INTO movies
     VALUES(?,?,?,?,?,?,?,?)
-    """, (
+    """,
+    (
         movie_id,
         movie_name,
         genre,
@@ -85,11 +99,9 @@ def add_movie():
     ))
 
     conn.commit()
-    
-    print("STEP D")
 
-    print("\nMovie Added Successfully.")
-    print("Movie ID :", movie_id)
+    console.print("\n[bold green]Movie Added Successfully![/bold green]")
+    console.print(f"[cyan]Movie ID :[/cyan] {movie_id}")
 
     conn.close()
 
